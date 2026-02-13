@@ -1,0 +1,1 @@
+const UsuarioModel = require()
