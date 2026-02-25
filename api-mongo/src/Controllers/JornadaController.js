@@ -2,79 +2,137 @@ const JornadaModel = require("../Models/JornadaModel");
 
 class JornadaController {
 
+  // CRIAR JORNADA
+  async create(req, res) {
+    try {
+      const { usuario } = req.body;
 
-    async create(req, res) {
-        const { dataInicio, qtdXP } = req.body;
+      if (!usuario) {
+        return res.status(400).json({
+          message: "Usuário é obrigatório."
+        });
+      }
 
-        if (!dataInicio || !qtdXP ) {
-            return res.status(400).json({ message: "Falha ao salvar, preencha todos os campos obrigatórios." });
-        }
+      // cria jornada sempre com XP 0 e nível 1
+      const jornada = await JornadaModel.create({
+        usuario
+      });
 
-        const createdJornada = await JornadaModel.create(req.body);
+      return res.status(201).json(jornada);
 
-        return res.status(200).json(createdJornada);
-
+    } catch (error) {
+      return res.status(400).json({
+        erro: error.message
+      });
     }
+  }
 
 
-    async findAll(req, res) {
-        const jornadas = await JornadaModel.find();
+  // BUSCAR TODAS AS JORNADAS
+  async findAll(req, res) {
+    try {
 
-        return res.status(200).json(jornadas);
+      const jornadas = await JornadaModel
+        .find()
+        .populate("usuario", "nomeUsuario emailUsuario");
 
+      return res.status(200).json(jornadas);
 
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao buscar jornadas."
+      });
     }
+  }
 
 
-    async findById(req, res) {
-        try {
-            const { id } = req.params;
+  // BUSCAR UMA JORNADA
+  async findById(req, res) {
+    try {
+      const { id } = req.params;
 
-            const jornada = await JornadaModel.findById(id);
+      const jornada = await JornadaModel
+        .findById(id)
+        .populate("usuario", "nomeUsuario emailUsuario");
 
-            if (!jornada) {
-                return res.status(404).json({ message: "Jornada não encontrada." });
-            }
+      if (!jornada) {
+        return res.status(404).json({
+          message: "Jornada não encontrada."
+        });
+      }
 
-            return res.status(200).json(jornada);
-        } catch (error) {
-            return res.status(404).json({ message: "Formato de busca inválido." });
-        }
+      return res.status(200).json(jornada);
 
+    } catch (error) {
+      return res.status(400).json({
+        message: "ID inválido."
+      });
     }
+  }
 
 
-    async update(req, res) {
-        try {
-            const { id } = req.params;
+  // ATUALIZAR JORNADA
+  async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { usuario } = req.body;
 
-            await JornadaModel.findByIdAndUpdate(id, req.body);
+      const jornada = await JornadaModel.findById(id);
 
-            return res.status(200).json({ message: "Jornada atualizada com sucesso." });
-        } catch {
-            return res.status(404).json({ message: "Falha ao atualizar a jornada." });
-        }
+      if (!jornada) {
+        return res.status(404).json({
+          message: "Jornada não encontrada."
+        });
+      }
 
+      // só permite alterar o usuário (caso necessário)
+      if (usuario !== undefined) {
+        jornada.usuario = usuario;
+      }
+
+      // ❌ NÃO permite alterar XP nem nível manualmente
+      // xp e nível só mudam no ProgressoController
+
+      await jornada.save();
+
+      return res.status(200).json({
+        message: "Jornada atualizada com sucesso.",
+        jornada
+      });
+
+    } catch (error) {
+      return res.status(400).json({
+        message: "Erro ao atualizar jornada."
+      });
     }
+  }
 
 
-    async delete(req, res) {
-        try {
-            const { id } = req.params;
+  // DELETAR JORNADA
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
 
-            const jornadaDeleted = await JornadaModel.findByIdAndDelete(id);
+      const jornada = await JornadaModel.findById(id);
 
-            if (!jornadaDeleted) {
-                return res.status(404).json({ message: "Jornada não encontrada." });
-            }
+      if (!jornada) {
+        return res.status(404).json({
+          message: "Jornada não encontrada."
+        });
+      }
 
-            return res.status(200).json({ message: "Jornada deletada com sucesso." });
-        } catch (error) {
-            console.log(error);
-            return res.status(404).json({ message: "Falha ao deletar a jornada." });
-        }
+      await JornadaModel.findByIdAndDelete(id);
 
+      return res.status(200).json({
+        message: "Jornada deletada com sucesso."
+      });
+
+    } catch (error) {
+      return res.status(400).json({
+        message: "Erro ao deletar jornada."
+      });
     }
+  }
 }
 
 module.exports = new JornadaController();

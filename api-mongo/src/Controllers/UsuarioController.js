@@ -11,20 +11,20 @@ class UsuarioController {
     return res.status(200).json(createdUsuario);
   }
 
-  async findById(req, res) {
+  async findAll(req, res) {
     const usuario = await UsuarioModel.find();
 
     return res.status(200).json(usuario);
   }
 
-  async findAll(req, res) {
+  async findById(req, res) {
     try {
       const { id } = req.params;
 
       const usuario = await UsuarioModel.findById(id);
 
       if (!usuario) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+        return res.status(404).json({ message: "Nenhum usuário não encontrado." });
       }
 
       return res.status(200).json(usuario);

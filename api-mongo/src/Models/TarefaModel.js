@@ -1,26 +1,24 @@
 const mongoose = require('mongoose');
-
 const { Schema } = mongoose;
 
 const TarefaSchema = new Schema({
-    nomeTarefa: {
+    enunciado: {
         type: String,
         required: true
     },
     questoesTarefa: {
-        type: String,
-        required: true
+        type: [{
+            type: Schema.Types.ObjectId,
+            ref: "questao"
+        }],
+        default: []
     },
-    questaoCorretaTarefa: {
-        type: String,
-        required: true
-    },
+
     topicoTarefa: {
-        type: String,
+        type: Number,
         required: true
     }
-})
-
+});
 
 const TarefaModel = mongoose.model('tarefa', TarefaSchema);
 

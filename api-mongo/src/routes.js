@@ -2,9 +2,11 @@ const { Router } = require('express');
 
 const ProductController = require('./Controllers/ProductController');
 const UsuarioController = require('./Controllers/UsuarioController');
-const CursoController = require('./Controller/CursoController');
-const JornadaController = require('./Jornada/JornadaController');
-const TarefaController = require('./Tarefa/TarefaController');
+const CursoController = require('./Controllers/CursoController');
+const JornadaController = require('./Controllers/JornadaController');
+const TarefaController = require('./Controllers/TarefaController');
+const EstatisticaController = require("./Controllers/EstatisticaController");
+const ProgressoController = require("./Controllers/ProgressoController");
 
 const routes = Router();
 
@@ -42,5 +44,8 @@ routes.get('/tarefa/:id', TarefaController.findById);
 routes.put('/tarefa/:id', TarefaController.update);
 routes.delete('/tarefa/:id', TarefaController.delete);
 
+routes.post("/progresso", ProgressoController.responder);
+
+routes.get("/estatisticas/:jornadaId", EstatisticaController.resumo);
 
 module.exports = routes;
