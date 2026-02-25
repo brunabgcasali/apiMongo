@@ -6,10 +6,15 @@ const CursoSchema = new Schema({
     nomeCurso: {
         type: String,
         required: true},
-    tarefasCurso: {
+    descricaoCurso: {
         type: String,
         required: true
-    }})
+    },
+    imagemCurso: {
+        type: String,
+        required: true
+    }
+})
 
     
         const CursoModel = mongoose.model('curso', CursoSchema);

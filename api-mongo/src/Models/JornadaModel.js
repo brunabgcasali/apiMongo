@@ -2,12 +2,17 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const JornadaSchema = new Schema({
+  nomeJornada: String,
   usuario: {
     type: Schema.Types.ObjectId,
     ref: "usuario",
     required: true
   },
-
+  cursoId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "cursos",
+    required: true
+  },
   dataInicio: {
     type: Date,
     default: () => new Date()
@@ -25,7 +30,12 @@ const JornadaSchema = new Schema({
     required: true,
     default: 1,
     min: 1
+  },
+    porcentagemConclusao: {
+    type: Number,
+    default: 0
   }
+
 }, {
   versionKey: false,
   timestamps: true

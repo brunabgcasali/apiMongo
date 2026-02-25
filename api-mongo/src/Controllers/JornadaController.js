@@ -1,21 +1,24 @@
 const JornadaModel = require("../Models/JornadaModel");
+const TarefaModel = require("../Models/TarefaModel");
+const ProgressoTarefaModel = require("../Models/ProgressoTarefaModel");
 
 class JornadaController {
 
   // CRIAR JORNADA
   async create(req, res) {
     try {
-      const { usuario } = req.body;
+      const { nomeJornada, cursoId, ordem } = req.body;
 
-      if (!usuario) {
+      if (!nomeJornada || !cursoId) {
         return res.status(400).json({
-          message: "Usuário é obrigatório."
+          message: "Nome da jornada e curso são obrigatórios."
         });
       }
 
-      // cria jornada sempre com XP 0 e nível 1
       const jornada = await JornadaModel.create({
-        usuario
+        nomeJornada,
+        cursoId,
+        ordem
       });
 
       return res.status(201).json(jornada);
@@ -34,7 +37,7 @@ class JornadaController {
 
       const jornadas = await JornadaModel
         .find()
-        .populate("usuario", "nomeUsuario emailUsuario");
+        .populate("cursoId", "nomeCurso");
 
       return res.status(200).json(jornadas);
 
@@ -53,7 +56,7 @@ class JornadaController {
 
       const jornada = await JornadaModel
         .findById(id)
-        .populate("usuario", "nomeUsuario emailUsuario");
+        .populate("cursoId", "nomeCurso");
 
       if (!jornada) {
         return res.status(404).json({
@@ -71,11 +74,52 @@ class JornadaController {
   }
 
 
+  // BUSCAR JORNADAS COM PROGRESSO DO USUÁRIO
+  async buscarComProgresso(req, res) {
+    try {
+      const { cursoId } = req.params;
+      const usuarioId = req.usuarioId;
+
+      const jornadas = await JornadaModel.find({ cursoId }).sort({ ordem: 1 });
+
+      const resultado = [];
+
+      for (let jornada of jornadas) {
+
+        const tarefas = await TarefaModel.find({ jornadaId: jornada._id });
+
+        const progresso = await ProgressoTarefaModel.find({
+          usuarioId,
+          tarefaId: { $in: tarefas.map(t => t._id) },
+          finalizada: true
+        });
+
+        const total = tarefas.length;
+        const concluidas = progresso.length;
+
+        resultado.push({
+          ...jornada._doc,
+          totalTarefas: total,
+          tarefasConcluidas: concluidas,
+          porcentagem: total > 0 ? (concluidas / total) * 100 : 0
+        });
+      }
+
+      return res.status(200).json(resultado);
+
+    } catch (error) {
+      return res.status(500).json({
+        message: "Erro ao buscar progresso da jornada."
+      });
+    }
+  }
+
+
   // ATUALIZAR JORNADA
   async update(req, res) {
     try {
       const { id } = req.params;
-      const { usuario } = req.body;
+      const { nomeJornada, cursoId, ordem } = req.body;
 
       const jornada = await JornadaModel.findById(id);
 
@@ -85,13 +129,9 @@ class JornadaController {
         });
       }
 
-      // só permite alterar o usuário (caso necessário)
-      if (usuario !== undefined) {
-        jornada.usuario = usuario;
-      }
-
-      // ❌ NÃO permite alterar XP nem nível manualmente
-      // xp e nível só mudam no ProgressoController
+      if (nomeJornada !== undefined) jornada.nomeJornada = nomeJornada;
+      if (cursoId !== undefined) jornada.cursoId = cursoId;
+      if (ordem !== undefined) jornada.ordem = ordem;
 
       await jornada.save();
 

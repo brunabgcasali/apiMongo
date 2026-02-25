@@ -32,11 +32,12 @@ routes.get('/curso/:id', CursoController.findById);
 routes.put('/curso/:id', CursoController.update);
 routes.delete('/curso/:id', CursoController.delete);
 
-routes.post('/jornada', JornadaController.create);
-routes.get('/jornada', JornadaController.findAll);
-routes.get('/jornada/:id', JornadaController.findById);
-routes.put('/jornada/:id', JornadaController.update);
-routes.delete('/jornada/:id', JornadaController.delete);
+router.get("/jornadas", auth, JornadaController.findAll);
+router.get("/jornadas/:id", auth, JornadaController.findById);
+router.get("/jornadas/curso/:cursoId/progresso", auth, JornadaController.buscarComProgresso);
+router.post("/jornadas", auth, JornadaController.create);
+router.put("/jornadas/:id", auth, JornadaController.update);
+router.delete("/jornadas/:id", auth, JornadaController.delete);
 
 routes.post('/tarefa', TarefaController.create);
 routes.get('/tarefa', TarefaController.findAll);
