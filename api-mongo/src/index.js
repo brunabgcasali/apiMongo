@@ -1,6 +1,19 @@
-const app = require('./app');
-const Loaders = require('./loaders/index');
+require("dotenv").config(); 
 
-Loaders.start();
+const app = require("./app");
+const Loaders = require("./loaders/index");
 
-app.listen(3333, () => console.log('Servidor rodando corretamente ^^'))
+async function startServer() {
+  try {
+    await Loaders.start(); 
+
+    app.listen(3333, () => {
+      console.log("Servidor rodando corretamente ^^");
+    });
+
+  } catch (error) {
+    console.error("Erro ao iniciar servidor:", error);
+  }
+}
+
+startServer();
