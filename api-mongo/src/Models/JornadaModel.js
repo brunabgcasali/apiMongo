@@ -2,38 +2,46 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const JornadaSchema = new Schema({
-  nomeJornada: String,
+
+  nomeJornada: {
+    type: String,
+    trim: true
+  },
+
   usuario: {
     type: Schema.Types.ObjectId,
-    ref: "usuario",
+    ref: "Usuario",
     required: true
   },
-  cursoId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "cursos",
+
+  curso: {
+    type: Schema.Types.ObjectId,
+    ref: "Curso",
     required: true
   },
+
   dataInicio: {
     type: Date,
-    default: () => new Date()
+    default: Date.now
   },
 
   xpTotal: {
     type: Number,
-    required: true,
     default: 0,
     min: 0
   },
 
   nivel: {
     type: Number,
-    required: true,
     default: 1,
     min: 1
   },
-    porcentagemConclusao: {
+
+  porcentagemConclusao: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0,
+    max: 100
   }
 
 }, {
@@ -41,18 +49,9 @@ const JornadaSchema = new Schema({
   timestamps: true
 });
 
-// 🔴 GARANTE valores padrão mesmo se vier undefined
-JornadaSchema.pre("save", function (next) {
+JornadaSchema.index(
+  { usuario: 1, curso: 1 },
+  { unique: true }
+);
 
-  if (this.xpTotal === undefined || this.xpTotal === null) {
-    this.xpTotal = 0;
-  }
-
-  if (this.nivel === undefined || this.nivel === null) {
-    this.nivel = 1;
-  }
-
-  next();
-});
-
-module.exports = mongoose.model("jornada", JornadaSchema);
+module.exports = mongoose.model("Jornada", JornadaSchema);

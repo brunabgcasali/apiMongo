@@ -1,74 +1,102 @@
-const CursoModel = require("../Models/CursoModel");
+const Curso = require('../Models/CursoModel');
 
 class CursoController {
 
-    async create(req, res) {
-        const { nomeCurso, tarefasCurso } = req.body;
+  static async create(req, res) {
+    try {
+      const { nomeCurso, descricaoCurso, imagemCurso } = req.body;
 
-        if (!nomeCurso || !tarefasCurso ) {
-            return res.status(400).json({ message: "Falha ao salvar, preencha todos os campos obrigatórios." });
-        }
+      const novoCurso = new Curso({
+        nomeCurso,
+        descricaoCurso,
+        imagemCurso
+      });
 
-        const createdCurso = await CursoModel.create(req.body);
+      await novoCurso.save();
 
-        return res.status(200).json(createdCurso);
+      return res.status(201).json(novoCurso);
 
+    } catch (error) {
+      return res.status(500).json({ erro: error.message });
     }
+  }
 
-    async findAll(req, res) {
-        const cursos = await CursoModel.find();
 
-        return res.status(200).json(cursos);
+  static async findAll(req, res) {
+    try {
+      const cursos = await Curso.find({ ativo: true });
 
+      return res.status(200).json(cursos);
+
+    } catch (error) {
+      return res.status(500).json({ erro: error.message });
     }
+  }
 
-    async findById(req, res) {
-        try {
-            const { id } = req.params;
 
-            const curso = await CursoModel.findById(id);
+  static async findById(req, res) {
+    try {
+      const { id } = req.params;
 
-            if (!curso) {
-                return res.status(404).json({ message: "Curso não encontrado." });
-            }
+      const curso = await Curso.findById(id);
 
-            return res.status(200).json(curso);
-        } catch (error) {
-            return res.status(404).json({ message: "Formato de busca inválido." });
-        }
+      if (!curso) {
+        return res.status(404).json({ mensagem: "Curso não encontrado" });
+      }
 
+      return res.status(200).json(curso);
+
+    } catch (error) {
+      return res.status(500).json({ erro: error.message });
     }
+  }
 
-    async update(req, res) {
-        try {
-            const { id } = req.params;
 
-            await CursoModel.findByIdAndUpdate(id, req.body);
+  static async update(req, res) {
+    try {
+      const { id } = req.params;
 
-            return res.status(200).json({ message: "Curso atualizado com sucesso." });
-        } catch {
-            return res.status(404).json({ message: "Falha ao atualizar o curso." });
-        }
+      const cursoAtualizado = await Curso.findByIdAndUpdate(
+        id,
+        req.body,
+        { new: true }
+      );
 
+      if (!cursoAtualizado) {
+        return res.status(404).json({ mensagem: "Curso não encontrado" });
+      }
+
+      return res.status(200).json(cursoAtualizado);
+
+    } catch (error) {
+      return res.status(500).json({ erro: error.message });
     }
+  }
 
-    async delete(req, res) {
-        try {
-            const { id } = req.params;
 
-            const cursoDeleted = await CursoModel.findByIdAndDelete(id);
+  static async delete(req, res) {
+    try {
+      const { id } = req.params;
 
-            if (!cursoDeleted) {
-                return res.status(404).json({ message: "Curso não encontrado." });
-            }
+      const curso = await Curso.findByIdAndUpdate(
+        id,
+        { ativo: false },
+        { new: true }
+      );
 
-            return res.status(200).json({ message: "Curso deletado com sucesso." });
-        } catch (error) {
-            console.log(error);
-            return res.status(404).json({ message: "Falha ao deletar o curso." });
-        }
+      if (!curso) {
+        return res.status(404).json({ mensagem: "Curso não encontrado" });
+      }
 
+      return res.status(200).json({
+        mensagem: "Curso desativado com sucesso"
+      });
+
+    } catch (error) {
+      return res.status(500).json({ erro: error.message });
     }
+  }
+
 }
 
-module.exports = new CursoController();
+module.exports = CursoController;

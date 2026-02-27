@@ -5,18 +5,20 @@ const { Schema } = mongoose;
 const CursoSchema = new Schema({
     nomeCurso: {
         type: String,
-        required: true},
+        required: true
+    },
     descricaoCurso: {
         type: String,
-        required: true
     },
     imagemCurso: {
         type: String,
-        required: true
+    },
+    ativo: {
+        type: Boolean,
+        default: true
     }
-})
+}, { timestamps: true });
 
-    
-        const CursoModel = mongoose.model('curso', CursoSchema);
-        
-        module.exports = CursoModel;
+const CursoModel = mongoose.model('Curso', CursoSchema);
+
+module.exports = CursoModel;

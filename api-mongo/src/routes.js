@@ -5,8 +5,6 @@ const UsuarioController = require('./Controllers/UsuarioController');
 const CursoController = require('./Controllers/CursoController');
 const JornadaController = require('./Controllers/JornadaController');
 const TarefaController = require('./Controllers/TarefaController');
-const EstatisticaController = require("./Controllers/EstatisticaController");
-const ProgressoController = require("./Controllers/ProgressoController");
 
 const routes = Router();
 
@@ -32,21 +30,17 @@ routes.get('/curso/:id', CursoController.findById);
 routes.put('/curso/:id', CursoController.update);
 routes.delete('/curso/:id', CursoController.delete);
 
-router.get("/jornadas", auth, JornadaController.findAll);
-router.get("/jornadas/:id", auth, JornadaController.findById);
-router.get("/jornadas/curso/:cursoId/progresso", auth, JornadaController.buscarComProgresso);
-router.post("/jornadas", auth, JornadaController.create);
-router.put("/jornadas/:id", auth, JornadaController.update);
-router.delete("/jornadas/:id", auth, JornadaController.delete);
+//router.get("/jornadas", auth, JornadaController.findAll);
+//router.get("/jornadas/:id", auth, JornadaController.findById);
+//router.get("/jornadas/curso/:cursoId/progresso", auth, JornadaController.buscarComProgresso);
+//router.post("/jornadas", auth, JornadaController.create);
+//router.put("/jornadas/:id", auth, JornadaController.update);
+//router.delete("/jornadas/:id", auth, JornadaController.delete);
 
 routes.post('/tarefa', TarefaController.create);
 routes.get('/tarefa', TarefaController.findAll);
 routes.get('/tarefa/:id', TarefaController.findById);
 routes.put('/tarefa/:id', TarefaController.update);
 routes.delete('/tarefa/:id', TarefaController.delete);
-
-routes.post("/progresso", ProgressoController.responder);
-
-routes.get("/estatisticas/:jornadaId", EstatisticaController.resumo);
 
 module.exports = routes;
