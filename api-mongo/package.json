@@ -1,20 +1,35 @@
 {
   "name": "api-mongo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API backend CodeCat",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon --legacy-watch src/index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node",
+    "express",
+    "mongodb",
+    "tcc",
+    "api"
+  ],
+  "author": "Bruna B G Casali",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
+<<<<<<< HEAD
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+=======
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.19.2",
+>>>>>>> ff25f3c0372cf29650c429bb6bc64e06cede9588
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1"
   },

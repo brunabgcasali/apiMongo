@@ -3,8 +3,10 @@ const { Router } = require('express');
 const ProductController = require('./Controllers/ProductController');
 const UsuarioController = require('./Controllers/UsuarioController');
 const CursoController = require('./Controllers/CursoController');
-const JornadaController = require('./Controllers/JornadaController');
+//const JornadaController = require('./Controllers/JornadaController');
 const TarefaController = require('./Controllers/TarefaController');
+const AuthController = require('./Controllers/AuthController');
+const AuthMiddleware = require('./Middlewares/AuthMiddleware');
 
 const routes = Router();
 
@@ -42,5 +44,13 @@ routes.get('/tarefa', TarefaController.findAll);
 routes.get('/tarefa/:id', TarefaController.findById);
 routes.put('/tarefa/:id', TarefaController.update);
 routes.delete('/tarefa/:id', TarefaController.delete);
+
+routes.post('/login', AuthController.login);
+routes.get('/perfil', AuthMiddleware, (req, res) => {
+  return res.json({
+    message: "Rota protegida acessada",
+    userId: req.userId
+  });
+});
 
 module.exports = routes;
