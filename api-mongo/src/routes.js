@@ -7,6 +7,7 @@ const CursoController = require('./Controllers/CursoController');
 const TarefaController = require('./Controllers/TarefaController');
 const AuthController = require('./Controllers/AuthController');
 const AuthMiddleware = require('./Middlewares/AuthMiddleware');
+const TopicoController = require("./Controllers/TopicoController");
 
 const routes = Router();
 
@@ -44,6 +45,7 @@ routes.get('/tarefa', TarefaController.findAll);
 routes.get('/tarefa/:id', TarefaController.findById);
 routes.put('/tarefa/:id', TarefaController.update);
 routes.delete('/tarefa/:id', TarefaController.delete);
+routes.post("/tarefa/completa", TarefaController.createComplete);
 
 routes.post('/login', AuthController.login);
 routes.get('/perfil', AuthMiddleware, (req, res) => {
@@ -52,5 +54,13 @@ routes.get('/perfil', AuthMiddleware, (req, res) => {
     userId: req.userId
   });
 });
+
+routes.post("/topico", TopicoController.create);
+routes.get("/topico", TopicoController.findAll);
+routes.get("/topico/:id", TopicoController.findById);
+routes.get("/topico/curso/:cursoId", TopicoController.findByCurso);
+routes.put("/topico/:id", TopicoController.update);
+routes.delete("/topico/:id", TopicoController.delete);
+routes.post("/topico/lote", TopicoController.createMany);
 
 module.exports = routes;

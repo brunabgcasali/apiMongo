@@ -25,16 +25,13 @@ const TarefaSchema = new Schema({
     type: String,
     enum: ["facil", "medio", "dificil"],
     required: true
-  },
-
-  questoes: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: "Questao"
-    }]}
+  }
 
 }, { timestamps: true });
 
-const TarefaModel = mongoose.model('Tarefa', TarefaSchema);
+TarefaSchema.index(
+  { topico: 1, ordem: 1 },
+  { unique: true }
+);
 
-module.exports = TarefaModel;
+module.exports = mongoose.model("Tarefa", TarefaSchema);

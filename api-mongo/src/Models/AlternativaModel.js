@@ -1,17 +1,22 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const QuestaoSchema = new Schema({
+const AlternativaSchema = new Schema({
 
-  tarefa: {
+  questao: {
     type: Schema.Types.ObjectId,
-    ref: "Tarefa",
+    ref: "Questao",
     required: true
   },
 
-  enunciado: {
+  texto: {
     type: String,
     required: true
+  },
+
+  correta: {
+    type: Boolean,
+    default: false
   },
 
   ordem: {
@@ -21,9 +26,9 @@ const QuestaoSchema = new Schema({
 
 }, { timestamps: true });
 
-QuestaoSchema.index(
-  { tarefa: 1, ordem: 1 },
+AlternativaSchema.index(
+  { questao: 1, ordem: 1 },
   { unique: true }
 );
 
-module.exports = mongoose.model("Questao", QuestaoSchema);
+module.exports = mongoose.model("Alternativa", AlternativaSchema);

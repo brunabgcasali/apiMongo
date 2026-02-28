@@ -11,15 +11,22 @@ const TopicoSchema = new Schema({
 
   titulo: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
 
   ordem: {
     type: Number,
-    required: true
+    required: true,
+    min: 1
   }
 
 }, { timestamps: true });
+
+TopicoSchema.index(
+  { curso: 1, ordem: 1 },
+  { unique: true }
+);
 
 const TopicoModel = mongoose.model('Topico', TopicoSchema);
 
