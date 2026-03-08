@@ -2,13 +2,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const TarefaSchema = new Schema({
-  
+
   topico: {
     type: Schema.Types.ObjectId,
     ref: "Topico",
     required: true
   },
-
 
   titulo: {
     type: String,
@@ -25,7 +24,34 @@ const TarefaSchema = new Schema({
     type: String,
     enum: ["facil", "medio", "dificil"],
     required: true
-  }
+  },
+
+  questoes: [
+    {
+      enunciado: {
+        type: String,
+        required: true
+      },
+
+      ordem: {
+        type: Number,
+        required: true
+      },
+
+      alternativas: [
+        {
+          texto: {
+            type: String,
+            required: true
+          },
+          correta: {
+            type: Boolean,
+            required: true
+          }
+        }
+      ]
+    }
+  ]
 
 }, { timestamps: true });
 

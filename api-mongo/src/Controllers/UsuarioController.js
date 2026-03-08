@@ -1,14 +1,41 @@
+const bcrypt = require("bcrypt");
 const UsuarioModel = require("../Models/UsuarioModel");
 
 class UsuarioController {
-  async create(req, res) {
-    const {usernameUsuario, nomeUsuario, sobrenomeUsuario, emailUsuario, senhaUsuario, dataDeCadastroUsuario} = req.body;
-    if (!usernameUsuario || !nomeUsuario || !sobrenomeUsuario || !emailUsuario || !senhaUsuario || !dataDeCadastroUsuario){
-        return res.status(400).json({message: "Falha ao salvar, preencha todos os campos obrigatórios."});
-    }
-    const createdUsuario = await UsuarioModel.create(req.body);
 
-    return res.status(200).json(createdUsuario);
+  async create(req, res) {
+    try {
+      const {
+        usernameUsuario,
+        nomeUsuario,
+        sobrenomeUsuario,
+        emailUsuario,
+        senhaUsuario,
+        dataDeCadastroUsuario
+      } = req.body;
+
+      if (!usernameUsuario || !nomeUsuario || !sobrenomeUsuario || !emailUsuario || !senhaUsuario || !dataDeCadastroUsuario){
+        return res.status(400).json({
+          message: "Falha ao salvar, preencha todos os campos obrigatórios."
+        });
+      }
+
+      const senhaCriptografada = await bcrypt.hash(senhaUsuario, 10);
+
+      const createdUsuario = await UsuarioModel.create({
+        usernameUsuario,
+        nomeUsuario,
+        sobrenomeUsuario,
+        emailUsuario,
+        senhaUsuario: senhaCriptografada,
+        dataDeCadastroUsuario
+      });
+
+      return res.status(201).json(createdUsuario);
+
+    } catch (error) {
+      return res.status(400).json({ message: "Erro ao criar usuário." });
+    }
   }
 
   async findAll(req, res) {

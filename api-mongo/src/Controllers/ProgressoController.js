@@ -1,57 +1,75 @@
-const ProgressoModel = require("../Models/ProgressoModel");
-const JornadaModel = require("../Models/JornadaModel");
-const QuestaoModel = require("../Models/QuestaoModel");
+const ProgressoService = require("../Services/ProgressoService");
 
 class ProgressoController {
 
-    async responder(req, res) {
-        try {
+  async progressoInicial(req, res) {
+    try {
 
-            const { jornadaId, tarefaId, questaoId, resposta } = req.body;
+      const usuarioId = req.user.id;
 
-            if (!jornadaId || !tarefaId || !questaoId || resposta === undefined) {
-                return res.status(400).json({
-                    message: "Dados incompletos."
-                });
-            }
+      const resultado = await ProgressoService.progressoInicial(usuarioId);
 
-            const questao = await QuestaoModel.findById(questaoId);
+      return res.status(200).json(resultado);
 
-            if (!questao) {
-                return res.status(404).json({
-                    message: "Questão não encontrada."
-                });
-            }
+    } catch (error) {
 
-            const acertou = resposta === questao.correta;
+      console.log(error);
 
-
-            // salva resposta
-            const progresso = await ProgressoModel.create({
-                jornada: jornadaId,
-                tarefa: tarefaId,
-                questao: questaoId,
-                acertou
-            });
-
-            // SE ACERTOU → GANHA XP
-            if (acertou) {
-                await JornadaModel.findByIdAndUpdate(
-                    jornadaId,
-                    { $inc: { xpTotal: 10 } } // adiciona 10 XP
-                );
-            }
-
-
-            return res.status(200).json({
-                acertou,
-                respostaCorreta: questao.correta
-            });
-
-        } catch (error) {
-            return res.status(400).json({ erro: error.message });
-        }
+      return res.status(500).json({
+        message: "Erro ao buscar progresso inicial."
+      });
     }
+  }
+
+  async responderQuestao(req, res) {
+    try {
+
+      const usuarioId = req.user.id;
+
+      const { questaoId, alternativaId } = req.body;
+
+      const resultado = await ProgressoService.responderQuestao(
+        usuarioId,
+        questaoId,
+        alternativaId
+      );
+
+      return res.status(200).json(resultado);
+
+    } catch (error) {
+
+      console.log(error);
+
+      return res.status(500).json({
+        message: error.message
+      });
+    }
+  }
+
+  async buscarProgresso(req, res) {
+
+    try {
+
+      const usuarioId = req.user.id;
+      const { tarefaId } = req.params;
+
+      const progresso = await ProgressoService.buscarProgresso(
+        usuarioId,
+        tarefaId
+      );
+
+      return res.json(progresso);
+
+    } catch (error) {
+
+      return res.status(404).json({
+        message: error.message
+      });
+
+    }
+
+  }
+
 }
 
 module.exports = new ProgressoController();

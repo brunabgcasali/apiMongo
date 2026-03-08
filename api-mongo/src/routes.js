@@ -3,11 +3,12 @@ const { Router } = require('express');
 const ProductController = require('./Controllers/ProductController');
 const UsuarioController = require('./Controllers/UsuarioController');
 const CursoController = require('./Controllers/CursoController');
-//const JornadaController = require('./Controllers/JornadaController');
+const JornadaController = require('./Controllers/JornadaController');
 const TarefaController = require('./Controllers/TarefaController');
 const AuthController = require('./Controllers/AuthController');
 const AuthMiddleware = require('./Middlewares/AuthMiddleware');
 const TopicoController = require("./Controllers/TopicoController");
+const ProgressoController = require("./Controllers/ProgressoController");
 
 const routes = Router();
 
@@ -33,12 +34,11 @@ routes.get('/curso/:id', CursoController.findById);
 routes.put('/curso/:id', CursoController.update);
 routes.delete('/curso/:id', CursoController.delete);
 
-//router.get("/jornadas", auth, JornadaController.findAll);
-//router.get("/jornadas/:id", auth, JornadaController.findById);
-//router.get("/jornadas/curso/:cursoId/progresso", auth, JornadaController.buscarComProgresso);
-//router.post("/jornadas", auth, JornadaController.create);
-//router.put("/jornadas/:id", auth, JornadaController.update);
-//router.delete("/jornadas/:id", auth, JornadaController.delete);
+routes.get("/jornada", JornadaController.findAll);
+routes.get("/jornada/:id", AuthMiddleware, JornadaController.findById);
+routes.post("/jornada", AuthMiddleware, JornadaController.create);
+routes.put("/jornada/:id", AuthMiddleware, JornadaController.update);
+routes.delete("/jornada/:id", AuthMiddleware, JornadaController.delete);
 
 routes.post('/tarefa', TarefaController.create);
 routes.get('/tarefa', TarefaController.findAll);
@@ -46,6 +46,8 @@ routes.get('/tarefa/:id', TarefaController.findById);
 routes.put('/tarefa/:id', TarefaController.update);
 routes.delete('/tarefa/:id', TarefaController.delete);
 routes.post("/tarefa/completa", TarefaController.createComplete);
+
+
 
 routes.post('/login', AuthController.login);
 routes.get('/perfil', AuthMiddleware, (req, res) => {
@@ -62,5 +64,29 @@ routes.get("/topico/curso/:cursoId", TopicoController.findByCurso);
 routes.put("/topico/:id", TopicoController.update);
 routes.delete("/topico/:id", TopicoController.delete);
 routes.post("/topico/lote", TopicoController.createMany);
+
+routes.get(
+  "/progresso",
+  AuthMiddleware,
+  ProgressoController.progressoInicial
+);
+
+routes.post(
+  "/progresso/responder/:tarefaId",
+  AuthMiddleware,
+  ProgressoController.responderQuestao
+);
+
+routes.get(
+  "/progresso/:tarefaId",
+  AuthMiddleware,
+  ProgressoController.buscarProgresso
+);
+
+//routes.post(
+//  "/progresso/finalizar/:tarefaId",
+//  AuthMiddleware,
+//  ProgressoController.finalizarTarefa
+//);
 
 module.exports = routes;

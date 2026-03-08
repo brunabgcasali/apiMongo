@@ -18,7 +18,6 @@ class TopicoController {
 
         } catch (error) {
 
-            // 🔥 Tratando erro de índice duplicado
             if (error.code === 11000) {
                 return res.status(400).json({
                     message: "Já existe um tópico com essa ordem neste curso."
