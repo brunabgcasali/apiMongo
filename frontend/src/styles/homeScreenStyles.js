@@ -181,6 +181,56 @@ const styles = StyleSheet.create({
     transform: [{ translateY: 6 }],
   },
 
+  overlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "rgba(0,0,0,0.4)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+modal: {
+  width: "80%",
+  backgroundColor: "#FFFFFF",
+  borderRadius: 20,
+  padding: 25,
+  alignItems: "center",
+
+  shadowColor: "#000",
+  shadowOpacity: 0.2,
+  shadowRadius: 10,
+  elevation: 10,
+},
+
+modalTitulo: {
+  fontSize: 18,
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: 10,
+},
+
+modalTexto: {
+  fontSize: 14,
+  color: "#666",
+  textAlign: "center",
+  marginBottom: 20,
+},
+
+modalBotao: {
+  backgroundColor: "#00C871",
+  paddingVertical: 10,
+  paddingHorizontal: 30,
+  borderRadius: 10,
+},
+
+modalBotaoTexto: {
+  color: "#FFF",
+  fontWeight: "bold",
+},
+
 });
 
 export default styles;

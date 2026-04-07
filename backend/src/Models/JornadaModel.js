@@ -25,6 +25,12 @@ const JornadaSchema = new Schema({
     default: Date.now
   },
 
+  ultimaTarefaRealizada: {
+  type: Schema.Types.ObjectId,
+  ref: "Tarefa",
+  default: null
+},
+
   xpTotal: {
     type: Number,
     default: 0,

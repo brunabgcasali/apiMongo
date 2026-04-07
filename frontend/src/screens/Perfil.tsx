@@ -66,7 +66,8 @@ export default function Perfil() {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <TouchableOpacity style={styles.botaoEditar}>
+        <TouchableOpacity style={styles.botaoEditar}
+          onPress={() => navigation.navigate("AlterarDados")}>
           <Text style={styles.textoEditar}>Editar</Text>
         </TouchableOpacity>
       </View>

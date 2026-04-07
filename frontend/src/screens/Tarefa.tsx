@@ -118,7 +118,7 @@ export default function Tarefa() {
                 ]}
               >
                 {alt}
-              </Text>            </View>
+              </Text></View>
           </TouchableOpacity>
         ))}
       </View>
